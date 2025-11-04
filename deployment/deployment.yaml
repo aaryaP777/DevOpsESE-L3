@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-dashboard
+  labels:
+    app: student-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-dashboard
+  template:
+    metadata:
+      labels:
+        app: student-dashboard
+    spec:
+      containers:
+        - name: frontend
+          image: <DOCKERHUB_USERNAME>/student-dashboard-frontend:latest
+          ports:
+            - containerPort: 80
+        - name: backend
+          image: <DOCKERHUB_USERNAME>/student-dashboard-backend:latest
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-dashboard-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: student-dashboard
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: api
+      port: 5000
+      targetPort: 5000
